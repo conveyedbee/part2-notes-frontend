@@ -1,4 +1,6 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import noteService from '../services/notes'
+import loginService from '../services/login'
 
 const NoteList = ({ notes }) => {
     const [showAll, setShowAll] = useState(true)
@@ -59,5 +61,44 @@ const NoteList = ({ notes }) => {
         })
     }
 
+    const loginForm = () => (
+        <Togglable buttonLabel="login">
+            <LoginForm login={handleLogin} />
+        </Togglable>
+    )
+
+    const noteForm = () => (
+        <Togglable buttonLabel="new note" ref={noteFormRef}>
+            <NoteForm createNote={addNote} />
+        </Togglable>
+    )
+
+    return (
+        <div>
+            <h1>Notes</h1>
+            <Notification message={errorMessage} />
+
+            {!user && loginForm()}
+            {user && (
+                <div>
+                    <p>{user.name} logged in</p>
+                    {noteForm()}
+                </div>
+            )}
+
+            <div>
+                <button onClick={() => setShowAll(!showAll)}>
+                    show {showAll ? 'important' : 'all'}
+                </button>
+            </div>
+            <ul>
+                {notesToShow.map((note) =>
+                    <Note key={note.id} note={note} toggleImportance={() => toggleImportanceOf(note.id)} />)}
+            </ul>
+            <Footer />
+        </div>
+    )
 
 }
+
+export default NoteList
