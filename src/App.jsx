@@ -70,7 +70,7 @@ const App = () => {
   const notesToShow = showAll
     ? notes
     : notes.filter(note => note.important)
-  
+
   const toggleImportanceOf = id => {
     console.log(`importance of ${id} needs to be toggled`)
     const note = notes.find(n => n.id === id)
@@ -95,13 +95,13 @@ const App = () => {
 
   const loginForm = () => (
     <Togglable buttonLabel="login">
-      <LoginForm login={handleLogin}/>
+      <LoginForm login={handleLogin} />
     </Togglable>
   )
 
   const noteForm = () => (
     <Togglable buttonLabel="new note" ref={noteFormRef}>
-      <NoteForm createNote={addNote}/>
+      <NoteForm createNote={addNote} />
     </Togglable>
   )
 
@@ -124,7 +124,7 @@ const App = () => {
         </button>
       </div>
       <ul>
-        {notesToShow.map((note) => 
+        {notesToShow.map((note) =>
           <Note key={note.id} note={note} toggleImportance={() => toggleImportanceOf(note.id)} />)}
       </ul>
       <Footer />
