@@ -27,7 +27,7 @@ const App = () => {
   }
 
   const deleteNote = (id) => {
-    noteService.deleteNote(id).then(() => {
+    noteService.remove(id).then(() => {
       setNotes(notes.filter(note => note.id !== id))
     })
   }
