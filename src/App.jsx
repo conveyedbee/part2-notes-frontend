@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import noteService from './services/notes'
 
 import {
-  BrowserRouter as Router,
-  Routes, Route, Link
+  Routes, Route, Link,
+  useMatch
 } from 'react-router-dom'
 import NoteList from './components/NoteList'
 import Note from './components/Note'
@@ -26,12 +26,43 @@ const App = () => {
     })
   }
 
+  const deleteNote = (id) => {
+    noteService.deleteNote(id).then(() => {
+      setNotes(notes.filter(note => note.id !== id))
+    })
+  }
+
+  const toggleImportanceOf = id => {
+      const note = notes.find(n => n.id === id)
+      const changedNote = { ...note, important: !note.important }
+  
+      noteService
+        .update(id, changedNote)
+        .then(returnedNote => {
+          setNotes(notes.map(note => (note.id !== id ? note : returnedNote)))
+        })
+        .catch(() => {
+          // setErrorMessage(
+          //   `Note '${note.content}' was already removed from server`
+          // )
+          // setTimeout(() => {
+          //   setErrorMessage(null)
+          // }, 5000)
+          setNotes(notes.filter(n => n.id !== id))
+        })
+  }
+
+  const match = useMatch('/notes/:id')
+  const note = match
+    ? notes.find(note => note.id === match.params.id)
+    : null
+
   const padding = {
     padding: 5
   }
 
   return (
-    <Router>
+    <div>
       <div>
         <Link style={padding} to="/">home</Link>
         <Link style={padding} to="/notes">notes</Link>
@@ -40,7 +71,11 @@ const App = () => {
 
       <Routes>
         <Route path="/notes/:id" element={
-          <Note notes={notes} toggleImportanceOf={toggleImportanceOf} />
+          <Note
+            note={note}
+            toggleImportanceOf={toggleImportanceOf}
+            deleteNote={deleteNote}
+          />
         } />
         <Route path="/notes" element={
           <NoteList notes={notes} />
@@ -52,7 +87,7 @@ const App = () => {
       </Routes>
 
       <Footer />
-    </Router>
+    </div>
   )
 }
 
