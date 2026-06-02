@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material'
 import Notification from './Notification'
 import LoginForm from './LoginForm'
 import Togglable from './Togglable'
@@ -70,13 +71,28 @@ const NoteList = ({ notes }) => {
           show {showAll ? 'important' : 'all'}
         </button>
       </div>
-      <ul>
-        {notesToShow.map(note => (
-          <li key={note.id}>
-            <Link to={`/notes/${note.id}`}>{note.content}</Link>
-          </li>
-        ))}
-      </ul>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Content</TableCell>
+              <TableCell>User</TableCell>
+              <TableCell>Important</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {notesToShow.map(note => (
+              <TableRow key={note.id}>
+                <TableCell>
+                  <Link to={`/notes/${note.id}`}>{note.content}</Link>
+                </TableCell>
+                <TableCell>{note.user.name}</TableCell>
+                <TableCell>{note.important ? 'yes' : 'no'}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   )
 }

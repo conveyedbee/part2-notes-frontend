@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Container } from '@mui/material'
 import noteService from './services/notes'
 
 import {
@@ -62,32 +63,34 @@ const App = () => {
   }
 
   return (
-    <div>
+    <Container>
       <div>
-        <Link style={padding} to="/">home</Link>
-        <Link style={padding} to="/notes">notes</Link>
-        <Link style={padding} to="/create">new note</Link>
+        <div>
+          <Link style={padding} to="/">home</Link>
+          <Link style={padding} to="/notes">notes</Link>
+          <Link style={padding} to="/create">new note</Link>
+        </div>
+
+        <Routes>
+          <Route path="/notes/:id" element={
+            <Note
+              note={note}
+              toggleImportance={toggleImportanceOf}
+              deleteNote={deleteNote}
+            />
+          } />
+          <Route path="/notes" element={
+            <NoteList notes={notes} />
+          } />
+          <Route path="/create" element={
+            <NoteForm createNote={addNote} />
+          } />
+          <Route path="/" element={<Home />} />
+        </Routes>
+
+        <Footer />
       </div>
-
-      <Routes>
-        <Route path="/notes/:id" element={
-          <Note
-            note={note}
-            toggleImportanceOf={toggleImportanceOf}
-            deleteNote={deleteNote}
-          />
-        } />
-        <Route path="/notes" element={
-          <NoteList notes={notes} />
-        } />
-        <Route path="/create" element={
-          <NoteForm createNote={addNote} />
-        } />
-        <Route path="/" element={<Home />} />
-      </Routes>
-
-      <Footer />
-    </div>
+    </Container>
   )
 }
 

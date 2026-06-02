@@ -13,9 +13,10 @@ const Note = ({note, toggleImportance, deleteNote}) => {
     : 'make important'
   
   const handleDelete = () => {
-    if (window.confirm(`Delete note ${note.content}?`))
+    if (window.confirm(`Delete note ${note.content}?`)) {
       deleteNote(id)
       navigate('/notes')
+    }   
   }
 
   return (
