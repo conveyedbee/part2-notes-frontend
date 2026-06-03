@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Container } from '@mui/material'
 import noteService from './services/notes'
+import Notification from './components/Notification'
 
 import {
   Routes, Route, Link,
@@ -14,6 +15,7 @@ import NoteForm from './components/NoteForm'
 
 const App = () => {
   const [notes, setNotes] = useState([])
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     noteService.getAll().then(initialNotes => {
@@ -24,6 +26,13 @@ const App = () => {
   const addNote = noteObject => {
     noteService.create(noteObject).then(returnedNote => {
       setNotes(notes.concat(returnedNote))
+      setNotification({
+        text: `Note '${returnedNote.content}' added!`,
+        type: 'success'
+      })
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
     })
   }
 
@@ -70,6 +79,8 @@ const App = () => {
           <Link style={padding} to="/notes">notes</Link>
           <Link style={padding} to="/create">new note</Link>
         </div>
+
+        <Notification message={notification} />
 
         <Routes>
           <Route path="/notes/:id" element={
