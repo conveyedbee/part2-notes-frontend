@@ -42,7 +42,7 @@ const App = () => {
   }
 
   const handleLogout = () => {
-    window.localStorage.removeItem('loggedNoteappuser')
+    window.localStorage.removeItem('loggedNoteappUser')
     setUser(null)
     noteService.setToken(null)
   }
@@ -111,6 +111,7 @@ const App = () => {
           <Route path="/notes/:id" element={
             <Note
               note={note}
+              user={user}
               toggleImportance={toggleImportanceOf}
               deleteNote={deleteNote}
             />
