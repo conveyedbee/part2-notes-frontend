@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Container } from '@mui/material'
+import { Container, AppBar, Toolbar, Button } from '@mui/material'
 import noteService from './services/notes'
 import loginService from './services/login'
 import Notification from './components/Notification'
@@ -91,20 +91,19 @@ const App = () => {
     ? notes.find(note => note.id === match.params.id)
     : null
 
-  const padding = {
-    padding: 5
-  }
+  const style = { '$hover': { bgcolor: 'rgba(255,255,255,0.3)'}}
 
   return (
     <Container>
+      <AppBar position="static">
+        <Toolbar>
+          <Button color="inherit" component={Link} to="/" sx={style}>home</Button>
+          <Button color="inherit" component={Link} to="/notes" sx={style}>notes</Button>
+          {user && <Button color="inherit" component={Link} to="/create" sx={style}>new note</Button>}
+          {user && <Button color="inherit" onClick={handleLogout} sx={style}>logout</Button>}
+        </Toolbar>
+      </AppBar>
       <div>
-        <div>
-          <Link style={padding} to="/">home</Link>
-          <Link style={padding} to="/notes">notes</Link>
-          {user && <Link style={padding} to="/create">new note</Link>}
-          {user && <button onClick={handleLogout}>logout</button>}
-        </div>
-
         <Notification message={notification} />
 
         <Routes>

@@ -12,7 +12,7 @@ const Note = ({note, user, toggleImportance, deleteNote}) => {
     ? 'make not important'
     : 'make important'
   
-  const isCreator = user && note.user.name === user.name
+  const isCreator = user && note.user.id === user.id
   
   const handleDelete = () => {
     if (window.confirm(`Delete note ${note.content}?`)) {
