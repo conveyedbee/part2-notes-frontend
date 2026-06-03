@@ -1,40 +1,23 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material'
 import Notification from './Notification'
 import LoginForm from './LoginForm'
 import Togglable from './Togglable'
-import loginService from '../services/login'
-import noteService from '../services/notes'
 
-const NoteList = ({ notes }) => {
+const NoteList = ({ notes, user, handleLogin }) => {
 
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
 
+  const notesToShow = showAll ? notes : notes.filter(note => note.important)
 
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      noteService.setToken(user.token)
-    }
-  }, [])
-
-
-  const handleLogin = async event => {
+  const onLogin = async event => {
     event.preventDefault()
-
     try {
-      const user = await loginService.login({ username, password })
-
-      window.localStorage.setItem('loggedNoteappUser', JSON.stringify(user))
-      noteService.setToken(user.token)
-      setUser(user)
+      await handleLogin({ username, password })
       setUsername('')
       setPassword('')
     } catch {
@@ -45,8 +28,6 @@ const NoteList = ({ notes }) => {
     }
   }
 
-  const notesToShow = showAll ? notes : notes.filter(note => note.important)
-
   const loginForm = () => (
     <Togglable buttonLabel="login">
       <LoginForm
@@ -54,7 +35,7 @@ const NoteList = ({ notes }) => {
         password={password}
         handleUsernameChange={({ target }) => setUsername(target.value)}
         handlePasswordChange={({ target }) => setPassword(target.value)}
-        handleSubmit={handleLogin}
+        handleSubmit={onLogin}
       />
     </Togglable>
   )

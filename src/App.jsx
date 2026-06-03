@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Container } from '@mui/material'
 import noteService from './services/notes'
+import loginService from './services/login'
 import Notification from './components/Notification'
 
 import {
@@ -14,6 +15,7 @@ import Footer from './components/Footer'
 import NoteForm from './components/NoteForm'
 
 const App = () => {
+  const [user, setUser] = useState(null)
   const [notes, setNotes] = useState([])
   const [notification, setNotification] = useState(null)
 
@@ -22,6 +24,28 @@ const App = () => {
       setNotes(initialNotes)
     })
   }, [])
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      noteService.setToken(user.token)
+    }
+  }, [])
+
+  const handleLogin = async ({ username, password}) => {
+    const user = await loginService.login({ username, password })
+    window.localStorage.setItem('loggedNoteappUser', JSON.stringify(user))
+    noteService.setToken(user.token)
+    setUser(user)
+  }
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedNoteappuser')
+    setUser(null)
+    noteService.setToken(null)
+  }
 
   const addNote = noteObject => {
     noteService.create(noteObject).then(returnedNote => {
@@ -77,7 +101,8 @@ const App = () => {
         <div>
           <Link style={padding} to="/">home</Link>
           <Link style={padding} to="/notes">notes</Link>
-          <Link style={padding} to="/create">new note</Link>
+          {user && <Link style={padding} to="/create">new note</Link>}
+          {user && <button onClick={handleLogout}>logout</button>}
         </div>
 
         <Notification message={notification} />
@@ -91,7 +116,7 @@ const App = () => {
             />
           } />
           <Route path="/notes" element={
-            <NoteList notes={notes} />
+            <NoteList notes={notes} user={user} handleLogin={handleLogin} />
           } />
           <Route path="/create" element={
             <NoteForm createNote={addNote} />
